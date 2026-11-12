@@ -1,0 +1,15 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.env
+venv/
+.venv/
+
+# Temporary media & downloads
+downloads/*
+!downloads/.gitkeep
+
+# Local batch & vbs scripts (only needed for local Windows runner)
+*.vbs
+test_*.ps1
