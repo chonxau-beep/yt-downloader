@@ -103,6 +103,11 @@ def get_video_info(url: str = Query(..., description="YouTube video URL")):
         'noplaylist': True,
         'quiet': True,
         'no_warnings': True,
+        'extractor_args': {
+            'youtube': {
+                'player_client': ['web', 'mweb', 'android', 'ios'],
+            }
+        }
     }
     try:
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
@@ -170,6 +175,11 @@ def run_download_job(job_id: str, url: str, target_format: str, quality: str, sa
         'progress_hooks': [progress_hook],
         'quiet': True,
         'no_warnings': True,
+        'extractor_args': {
+            'youtube': {
+                'player_client': ['web', 'mweb', 'android', 'ios'],
+            }
+        }
     }
     if FFMPEG_BIN:
         ydl_opts['ffmpeg_location'] = FFMPEG_BIN
@@ -187,13 +197,13 @@ def run_download_job(job_id: str, url: str, target_format: str, quality: str, sa
             ],
         })
     else:  # mp4
-        # Select best video + audio and merge into mp4
+        # Select best video + audio and merge into mp4 (without restricting raw stream extension)
         if quality == "720":
-            fmt = "bestvideo[height<=720][ext=mp4]+bestaudio[ext=m4a]/best[height<=720][ext=mp4]/best"
+            fmt = "bestvideo[height<=720]+bestaudio/best[height<=720]/best"
         elif quality == "1080":
-            fmt = "bestvideo[height<=1080][ext=mp4]+bestaudio[ext=m4a]/best[height<=1080][ext=mp4]/best"
+            fmt = "bestvideo[height<=1080]+bestaudio/best[height<=1080]/best"
         else:
-            fmt = "bestvideo[ext=mp4]+bestaudio[ext=m4a]/bestvideo+bestaudio/best"
+            fmt = "bestvideo+bestaudio/best"
 
         ydl_opts.update({
             'format': fmt,
